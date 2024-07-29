@@ -1,0 +1,71 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Custom Date Validation";
+}
+
+<h2>Custom Date Validation</h2>
+
+<form id="myForm">
+    <div>
+        <label asp-for="CustomDate.EmployementStartDate"></label>
+        <input asp-for="CustomDate.EmployementStartDate" autocomplete="off" />
+        <span asp-validation-for="CustomDate.EmployementStartDate"></span>
+    </div>
+    <div>
+        <label asp-for="CustomDate.EmployementEndDate"></label>
+        <input asp-for="CustomDate.EmployementEndDate" autocomplete="off" />
+        <span asp-validation-for="CustomDate.EmployementEndDate"></span>
+    </div>
+</form>
+
+@section Scripts {
+    <script src="~/js/custom-validation.js"></script>
+    <script>
+        const displayValidationMessage = (element, message) => {
+            let nextElem = element.nextElementSibling;
+            if (nextElem) {
+                nextElem.textContent = message;
+            }
+        };
+        document.getElementById('CustomDate_EmployementStartDate').addEventListener('input', (evt) => {
+            const res = validationEngine.isValid();
+            if (res.length) {
+                for (let i = 0; i < res.length; i++) {
+                    const elem = document.getElementById(res[i].field);
+                    displayValidationMessage(elem, elem.getAttribute(res[i].message))
+                }
+                const current = res.find((r) => r.field === evt.currentTarget.id);
+                if (!current) {
+                    displayValidationMessage(evt.currentTarget, '');
+                }
+            } else {
+                displayValidationMessage(evt.currentTarget, '');
+                displayValidationMessage(returnElementFromId('CustomDate_EmployementEndDate'), '');
+            }
+        });
+
+        const returnElementFromId = (Id) => {
+            if (!Id)
+                return null;
+            return document.getElementById(Id);
+        }
+
+        document.getElementById('CustomDate_EmployementEndDate').addEventListener('input', (evt) => {
+            const res = validationEngine.isValid();
+            if (res.length) {
+                for (let i = 0; i < res.length; i++) {
+                    const elem = document.getElementById(res[i].field);
+                    displayValidationMessage(elem, elem.getAttribute(res[i].message))
+                }
+                const current = res.find((r) => r.field === evt.currentTarget.id);
+                if (!current) {
+                    displayValidationMessage(evt.currentTarget, '');
+                }
+            } else {
+                displayValidationMessage(evt.currentTarget, '');
+                displayValidationMessage(returnElementFromId('CustomDate_EmployementStartDate'), '');
+            }
+        });
+    </script>
+}
